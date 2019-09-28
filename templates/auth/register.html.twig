@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация{% endblock %}
+
+ {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% block body %}
+    <div class="col-md-offset-4 col-md-4">
+        {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.surname) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.plainPassword.first) }}
+        {{ form_row(form.plainPassword.second) }}
+        <div class="form-group">
+            <button class="btn btn-default" type="submit">Зарегистрироваться</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

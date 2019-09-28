@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Манифест{% endblock %}</title>
+    {% block stylesheets %}
+        <link href="{{ '/bootstrap/css/bootstrap.min.css' }}" rel="stylesheet" />
+    {% endblock %}
+</head>
+<body>
+{% block navbar %}
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <span class="navbar-brand">Привет, {% if app.user != null %}{{ app.user.fullName }} из {{ app.user.company.companyName }}{% else %}гость{% endif %}!</span>
+
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ path('main') }}">Главная</a></li>
+                    {% if app.user == null %}
+                        <li><a href="{{ path('login') }}">Войти в систему</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+                        <li><a href="{{ path('logout') }}">Выйти</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+{% endblock %}
+{% block body %}{% endblock %}
+{% block javascripts %}
+    <script src="{{ '/bootstrap/js/bootstrap.min.js' }}"></script>
+{% endblock %}
+</body>
+</html>
+
