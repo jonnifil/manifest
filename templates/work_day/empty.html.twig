@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello WorkDayController!{% endblock %}
+
+{% block body %}
+<div class="col-md-12 text-center">
+    <a class="btn btn-success btn-lg" href="{{ path('work_day', {'create': 1}) }}">Начать рабочий день</a>
+</div>
+{% endblock %}

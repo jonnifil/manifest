@@ -53,8 +53,9 @@ class WorkDayRepository extends ServiceEntityRepository
         $currentDate = (new \DateTime())->format('Y-m-d');
         return $this->createQueryBuilder('w')
             ->andWhere('w.company = :val')
-            ->andWhere("w.day LIKE ':day'")
-            ->setParameters(['val' => $company, 'day' => $currentDate . '%'])
+            ->setParameter('val', $company)
+            ->andWhere("w.day LIKE :day")
+            ->setParameter('day', $currentDate . '%')
             ->getQuery()
             ->getOneOrNullResult()
             ;

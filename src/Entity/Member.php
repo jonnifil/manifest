@@ -35,14 +35,18 @@ class Member
     private $middle_name;
 
     /**
-     * @ORM\Column(type="smallint")
-     */
-    private $type;
-
-    /**
      * @ORM\Column(type="string", length=1, nullable=true)
      */
     private $category;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role")
+     * @ORM\JoinTable(name="member_roles",
+     *      joinColumns={@ORM\JoinColumn(name="member_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
+     *      )
+     */
+    private $roles;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Company", inversedBy="members")
@@ -123,6 +127,7 @@ class Member
         $this->aff_seconds = new ArrayCollection();
         $this->aff_operators = new ArrayCollection();
         $this->singletons = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -219,6 +224,14 @@ class Member
     public function getSingletons()
     {
         return $this->singletons;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRoles()
+    {
+        return $this->roles;
     }
 
     public function getCompany(): ?Company
