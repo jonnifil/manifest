@@ -287,18 +287,6 @@ class Member
         return $this;
     }
 
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType(int $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getCategory(): ?string
     {
         return $this->category;

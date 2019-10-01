@@ -9,9 +9,27 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Role
 {
+    const NO_JUMP = 1;
+    const SINGLETON = 2;
+    const TANDEM_CLIENT = 3;
+    const AFF_CLIENT = 4;
+    const WS_USER = 5;
+    const RW_USER = 6;
+    const FF_USER = 7;
+    const RW_COACH = 8;
+    const FF_COACH = 9;
+    const WS_COACH = 10;
+    const RW_LOT = 11;
+    const FF_LOT = 12;
+    const WS_LOT = 13;
+    const TANDEM_MASTER = 14;
+    const AFF_FIRST = 15;
+    const AFF_SECOND = 16;
+    const OPERATOR = 17;
+
+
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -26,6 +44,13 @@ class Role
         return $this->id;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -36,5 +61,14 @@ class Role
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     * for choices
+     */
+    public function getDisplayName()
+    {
+        return $this->name;
     }
 }
