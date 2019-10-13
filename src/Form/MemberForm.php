@@ -36,7 +36,7 @@ class MemberForm extends AbstractType
             ->add('surname', TextType::class, ['label' => 'Фамилия'])
             ->add('name', TextType::class, ['label' => 'Имя'])
             ->add('middle_name', TextType::class, ['label' => 'Отчество'])
-            ->add('category', ChoiceType::class, ['label' => 'Катергория', 'choices' =>self::CATEGORY_LIST])
+            ->add('category', ChoiceType::class, ['label' => 'Катергория', 'choices' => self::CATEGORY_LIST])
             ->add('roles', EntityType::class, ['label' => 'Доступные роли',
                 'multiple' => true,
                 'expanded' => true,

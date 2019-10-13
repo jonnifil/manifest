@@ -107,6 +107,19 @@ class WorkDay
         return $this->members;
     }
 
+    /**
+     * @return array
+     */
+    public function getMemberIds()
+    {
+        $ids = [];
+        if ($this->members) {
+            foreach ($this->members as $member)
+                $ids[] = $member->getId();
+        }
+        return $ids;
+    }
+
     public function getCompany(): ?Company
     {
         return $this->company;

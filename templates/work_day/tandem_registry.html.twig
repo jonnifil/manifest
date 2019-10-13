@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MemberController!{% endblock %}
+
+
+ {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% block body %}
+    <div class="col-md-offset-4 col-md-4">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="form-group">
+            <button class="btn btn-default" type="submit">Сохранить</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

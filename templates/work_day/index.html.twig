@@ -5,5 +5,13 @@
 {% block body %}
 <div class="col-md-12">
     <h1 class="text-center">{{ date }}</h1>
+    <div class="col-md-7 text-left">
+        <a class="btn btn-lg btn-default" href="{{ path('tandem_registry') }}">Зарегистрировать тандем</a>
+    </div>
+    {% for flight in flights %}
+    <div class="col-md-3">
+        <h2> Взлёт № {{ flight.number }}</h2>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

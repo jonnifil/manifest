@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\Member;
+use App\Entity\Role;
+use App\Entity\WorkDay;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -17,6 +20,39 @@ class MemberRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Member::class);
+    }
+
+    /**
+     * @param Company $company
+     * @param WorkDay|null $workDay
+     * @param array $roles
+     * @return array|mixed
+     */
+    public function findByRoles(Company $company, WorkDay $workDay=null, $roles=[Role::SINGLETON])
+    {
+        $query = $this->createQueryBuilder('m')
+            ->join('m.Role', 'mr')
+            ->andWhere('m.company_id=:company')
+            ->setParameter('company', $company->getId())
+            ->andWhere('mr.id IN (:val)')
+            ->setParameter('val', $roles)
+            ;
+        if (isset($workDay) && $workDay instanceof WorkDay) {
+            $memberIds = $workDay->getMemberIds();
+            if (!$memberIds)
+                return [];
+            $query
+                ->andWhere('m.id IN (:ids)')
+                ->setParameter('ids', $memberIds)
+            ;
+        }
+
+        return $query
+            ->groupBy('m.id')
+            ->orderBy('m.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     // /**
