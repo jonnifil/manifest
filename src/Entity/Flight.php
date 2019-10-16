@@ -168,4 +168,9 @@ class Flight
 
         return $this;
     }
+
+    public function getDisplayName()
+    {
+        return 'Взлёт № ' . $this->getNumber();
+    }
 }

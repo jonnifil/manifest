@@ -298,4 +298,17 @@ class Member
 
         return $this;
     }
+
+    public function setRoles($roleList=[])
+    {
+        $this->roles = $roleList;
+
+        return $this;
+    }
+
+    public function getDisplayName()
+    {
+        $middleName = is_null($this->getMiddleName()) ? '' : ' ' . $this->getMiddleName();
+        return $this->getSurname() . ' ' . $this->getName() . $middleName;
+    }
 }

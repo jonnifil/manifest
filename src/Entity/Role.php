@@ -27,6 +27,19 @@ class Role
     const AFF_SECOND = 16;
     const OPERATOR = 17;
 
+    const WORKERS = [
+        self::TANDEM_MASTER,
+        self::AFF_FIRST,
+        self::AFF_SECOND,
+        self::OPERATOR,
+        self::RW_COACH,
+        self::FF_COACH,
+        self::WS_COACH,
+        self::RW_LOT,
+        self::FF_LOT,
+        self::WS_LOT,
+    ];
+
 
     /**
      * @ORM\Id()

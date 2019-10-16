@@ -1,13 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MemberController!{% endblock %}
+{% block title %}Регистация тандема{% endblock %}
 
 
  {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
 {% block body %}
     <div class="col-md-offset-4 col-md-4">
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        {{ form_row(form.passenger.surname) }}
+        {{ form_row(form.passenger.name) }}
+        {{ form_row(form.passenger.middle_name) }}
+        <div class="hidden">
+            {{ form_row(form.passenger.category) }}
+            {{ form_row(form.passenger.roles) }}
+        </div>
+        {{ form_row(form.flight) }}
+        {{ form_row(form.driver) }}
+        {{ form_row(form.operator) }}
         <div class="form-group">
             <button class="btn btn-default" type="submit">Сохранить</button>
         </div>

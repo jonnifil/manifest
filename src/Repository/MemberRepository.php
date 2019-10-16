@@ -31,9 +31,9 @@ class MemberRepository extends ServiceEntityRepository
     public function findByRoles(Company $company, WorkDay $workDay=null, $roles=[Role::SINGLETON])
     {
         $query = $this->createQueryBuilder('m')
-            ->join('m.Role', 'mr')
-            ->andWhere('m.company_id=:company')
-            ->setParameter('company', $company->getId())
+            ->join('m.roles', 'mr')
+            ->andWhere('m.company=:company')
+            ->setParameter('company', $company)
             ->andWhere('mr.id IN (:val)')
             ->setParameter('val', $roles)
             ;

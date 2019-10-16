@@ -29,14 +29,14 @@ class Tandem
     private $flight;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Member", inversedBy="passengers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Member", inversedBy="passengers",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $passenger;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Member", inversedBy="drivers")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $driver;
 

@@ -7,7 +7,9 @@ use App\Entity\Member;
 use App\Entity\Role;
 use App\Entity\Tandem;
 use App\Entity\WorkDay;
+use App\Form\MemberForm;
 use App\Form\TandemRegistryType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,9 +56,9 @@ class WorkDayController extends AbstractController
     }
 
     /**
-     * @Route("/tandem_registry", name="tandem_registry")
+     * @Route("/tandem_registry/{id}", name="tandem_registry")
      */
-    public function tandemRegistry(Request $request)
+    public function tandemRegistry(Request $request, int $id=null)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -64,30 +66,103 @@ class WorkDayController extends AbstractController
 
         $repository = $this->getDoctrine()->getRepository(WorkDay::class);
         $currentWorkDay = $repository->findCurrent($company);
-//        if (!isset($currentWorkDay)) {
-////            $this->redirectToRoute('work_day');
-//        }
+        if (!isset($currentWorkDay)) {
+            return $this->redirectToRoute('work_day');
+        }
 
         $memberRepository = $this->getDoctrine()->getRepository(Member::class);
+        $roleRepository = $this->getDoctrine()->getRepository(Role::class);
+        $tandemRepository = $this->getDoctrine()->getRepository(Tandem::class);
         $options = [
             'flights_data' => $currentWorkDay->getFlights(),
             'driver_data' => $memberRepository->findByRoles($company, $currentWorkDay, [Role::TANDEM_MASTER]),
             'operator_data' => $memberRepository->findByRoles($company, $currentWorkDay, [Role::OPERATOR])
         ];
 
-        $tandem = new Tandem();
-        $form = $this->createForm(TandemRegistryType::class, $tandem, $options);
+        if (isset($id)) {
+            $tandem = $tandemRepository->find($id);
+        } else
+            $tandem = new Tandem();
+        $form = $this->createFormBuilder($tandem)
+            ->add('passenger', MemberForm::class)
+            ->add('flight', EntityType::class, [
+                'label' => 'Взлёт',
+                'class' => Flight::class,
+                'choices' => $options['flights_data'],
+                'choice_label' => 'displayName',
+                'required'   => false,
+                'placeholder' => 'Не выбран'
+            ])
+            ->add('driver', EntityType::class, [
+                'label' => 'Тандем мастер',
+                'class' => Member::class,
+                'choices' => $options['driver_data'],
+                'choice_label' => 'displayName',
+                'required'   => false,
+                'placeholder' => 'Не выбран'
+            ])
+            ->add('operator', EntityType::class, [
+                'label' => 'Оператор',
+                'class' => Member::class,
+                'choices' => $options['operator_data'],
+                'choice_label' => 'displayName',
+                'required'   => false,
+                'placeholder' => 'Не выбран'
+            ])
+            ->getForm()
+        ;
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $tandem = $form->getData();
             $tandem->setWorkDay($currentWorkDay);
             $tandem->getPassenger()->setCompany($company);
+            $tandem->getPassenger()->setRoles([$roleRepository->find(Role::TANDEM_CLIENT)]);
             $em = $this->getDoctrine()->getManager();
             $em->persist($tandem);
             $em->flush();
+            return $this->redirectToRoute('/tandem_registry/' . $tandem->id);
         }
 
-        $this->render('work_day/tandem_registry', [
+        return $this->render('work_day/tandem_registry.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/worker_registry", name="worker_registry")
+     */
+    public function workerRegistry(Request $request)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $company = $this->getUser()->getCompany();
+
+        $repository = $this->getDoctrine()->getRepository(WorkDay::class);
+        $currentWorkDay = $repository->findCurrent($company);
+        if (!isset($currentWorkDay)) {
+            return $this->redirectToRoute('work_day');
+        }
+        $memberRepository = $this->getDoctrine()->getRepository(Member::class);
+        $form = $this->createFormBuilder($currentWorkDay)
+            ->add('members', EntityType::class, ['label' => 'Присутствующие инструктора',
+                'multiple' => true,
+                'expanded' => true,
+                'class' => Member::class,
+                'choices' => $memberRepository->findByRoles($company, null, Role::WORKERS),
+                'choice_label' => 'displayName',])
+            ->getForm()
+            ;
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $currentWorkDay = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($currentWorkDay);
+            $em->flush();
+            return $this->redirectToRoute('work_day');
+        }
+
+        return $this->render('work_day/worker_registry.html.twig', [
             'form' => $form->createView()
         ]);
     }
