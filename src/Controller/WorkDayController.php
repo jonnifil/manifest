@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Aff;
 use App\Entity\Flight;
 use App\Entity\Member;
 use App\Entity\Role;
 use App\Entity\Tandem;
 use App\Entity\WorkDay;
+use App\Form\AffType;
 use App\Form\MemberForm;
 use App\Form\TandemRegistryType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -163,6 +165,39 @@ class WorkDayController extends AbstractController
         }
 
         return $this->render('work_day/worker_registry.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/aff_registry", name="aff_registry")
+     */
+    public function affRegistry(Request $request)
+    {
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $company = $this->getUser()->getCompany();
+
+        $repository = $this->getDoctrine()->getRepository(WorkDay::class);
+        $currentWorkDay = $repository->findCurrent($company);
+        if (!isset($currentWorkDay)) {
+            return $this->redirectToRoute('work_day');
+        }
+        $form = $this->createForm(AffType::class);
+        $aff = new Aff();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $aff = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($aff);
+            $em->flush();
+            return $this->redirectToRoute('work_day');
+        }
+
+        return $this->render('work_day/aff_registry.html.twig', [
             'form' => $form->createView()
         ]);
     }

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация АФФ{% endblock %}
+
+
+ {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+{% block body %}
+    <div class="col-md-offset-2 col-md-8">
+        <h2>Регистрация АФФ</h2>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="form-group">
+            <button class="btn btn-default" type="submit">Сохранить</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
