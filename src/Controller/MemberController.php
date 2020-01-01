@@ -11,6 +11,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class MemberController extends AbstractController
 {
     /**
+     * @param Request $request
+     * @param int|null $id
+     * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/member/{id}", name="member")
      */
     public function add(Request $request, int $id=null)
